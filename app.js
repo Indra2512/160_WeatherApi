@@ -28,17 +28,24 @@ app.get("/api/lokasi", async (req, res) => {
         let provinsi = "-";
         let kecamatan = "-";
 
+        // 1. Cari hirarki dari context bawaan MapTiler
         if (feature.context) {
             feature.context.forEach(ctx => {
                 if (ctx.id.startsWith("country")) negara = ctx.text;
                 if (ctx.id.startsWith("region") || ctx.id.startsWith("province")) provinsi = ctx.text;
-                if (ctx.id.startsWith("subdistrict") || ctx.id.startsWith("district") || ctx.id.startsWith("locality")) {
+                if (
+                    ctx.id.startsWith("subdistrict") || 
+                    ctx.id.startsWith("district") || 
+                    ctx.id.startsWith("locality") ||
+                    ctx.id.startsWith("place")
+                ) {
                     kecamatan = ctx.text;
                 }
             });
         }
 
-       if (kecamatan === "-") {
+        // 2. Jika kecamatan masih tidak ditemukan di context, gunakan teks lokasi utama
+        if (kecamatan === "-") {
             kecamatan = feature.text || kota;
         }
 

@@ -12,7 +12,7 @@
     <h1 class="text-2xl font-bold mb-1 text-blue-400 text-center">Data Lokasi MapTiler</h1>
     <p class="text-slate-400 text-xs text-center mb-6">Integrasi Express.js dengan MapTiler API</p>
     
-    <!-- Input Lokasi -->
+    <!-- Form Input Lokasi -->
     <div class="space-y-2 mb-6">
       <label for="inputKota" class="text-xs font-semibold uppercase tracking-wider text-slate-300">LOKASI: &lt;INPUT&gt;</label>
       <div class="flex gap-2">
@@ -25,6 +25,7 @@
         <button 
           id="btnCari" 
           type="button"
+          onclick="cariData()"
           class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded-lg transition-all shadow-lg shadow-blue-500/20 text-sm whitespace-nowrap"
         >
           cari
@@ -70,8 +71,8 @@
   <script>
     async function cariData() {
       const inputEl = document.getElementById('inputKota');
-      if (!inputEl) return alert('Elemen inputKota tidak ditemukan');
-      
+      if (!inputEl) return;
+
       const kota = inputEl.value.trim();
       if (!kota) {
         alert('Silakan masukkan nama lokasi terlebih dahulu!');
@@ -99,12 +100,9 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      const btn = document.getElementById('btnCari');
-      const input = document.getElementById('inputKota');
-
-      if (btn) btn.addEventListener('click', cariData);
-      if (input) {
-        input.addEventListener('keypress', (e) => {
+      const inputEl = document.getElementById('inputKota');
+      if (inputEl) {
+        inputEl.addEventListener('keypress', (e) => {
           if (e.key === 'Enter') cariData();
         });
       }

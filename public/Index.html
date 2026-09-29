@@ -13,23 +13,21 @@
     <p class="text-slate-400 text-xs text-center mb-6">Integrasi Express.js dengan MapTiler API</p>
     
     <!-- Form Input Lokasi -->
-    <div class="space-y-2 mb-6">
-      <label for="inputKota" class="text-xs font-semibold uppercase tracking-wider text-slate-300">LOKASI: &lt;INPUT&gt;</label>
-      <div class="flex gap-2">
-        <input 
-          type="text" 
-          id="inputKota" 
-          placeholder="Masukkan nama kota/lokasi..." 
-          class="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:outline-none focus:border-blue-500 text-sm text-white"
-        >
-        <button 
-          id="btnCari" 
-          type="button"
-          onclick="cariData()"
-          class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded-lg transition-all shadow-lg shadow-blue-500/20 text-sm whitespace-nowrap"
-        >
-          cari
-        </button>
+    <div class="flex gap-2">
+  <input 
+    type="text" 
+    id="inputKota" 
+    placeholder="Masukkan nama kota/lokasi..." 
+    class="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:outline-none focus:border-blue-500 text-sm text-white"
+  >
+  <button 
+    type="button"
+    onclick="cariData()"
+    class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded-lg transition-all shadow-lg shadow-blue-500/20 text-sm whitespace-nowrap"
+  >
+    cari
+  </button>
+</div>
       </div>
     </div>
 
@@ -68,45 +66,41 @@
     </div>
   </div>
 
-  <script>
-    async function cariData() {
-      const inputEl = document.getElementById('inputKota');
-      if (!inputEl) return;
+ <script>
+  async function cariData() {
+    const inputKota = document.getElementById('inputKota');
+    if (!inputKota) return alert('Elemen inputKota tidak ditemukan!');
 
-      const kota = inputEl.value.trim();
-      if (!kota) {
-        alert('Silakan masukkan nama lokasi terlebih dahulu!');
-        return;
-      }
-
-      try {
-        const response = await fetch(`/api/lokasi?kota=${encodeURIComponent(kota)}`);
-        const data = await response.json();
-
-        if (response.ok) {
-          document.getElementById('namaTempat').textContent = data.namaTempat || '-';
-          document.getElementById('negara').textContent = data.negara || '-';
-          document.getElementById('provinsi').textContent = data.provinsi || '-';
-          document.getElementById('kecamatan').textContent = data.kecamatan || '-';
-          document.getElementById('longitude').textContent = data.longitude || '-';
-          document.getElementById('latitude').textContent = data.latitude || '-';
-        } else {
-          alert('Gagal mengambil data: ' + data.message);
-        }
-      } catch (err) {
-        console.error(err);
-        alert('Terjadi kesalahan koneksi ke server.');
-      }
+    const kota = inputKota.value.trim();
+    if (!kota) {
+      alert('Silakan masukkan nama lokasi terlebih dahulu!');
+      return;
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const inputEl = document.getElementById('inputKota');
-      if (inputEl) {
-        inputEl.addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') cariData();
-        });
+    try {
+      const response = await fetch(`/api/lokasi?kota=${encodeURIComponent(kota)}`);
+      const data = await response.json();
+
+      if (response.ok) {
+        document.getElementById('namaTempat').textContent = data.namaTempat || '-';
+        document.getElementById('negara').textContent = data.negara || '-';
+        document.getElementById('provinsi').textContent = data.provinsi || '-';
+        document.getElementById('kecamatan').textContent = data.kecamatan || '-';
+        document.getElementById('longitude').textContent = data.longitude || '-';
+        document.getElementById('latitude').textContent = data.latitude || '-';
+      } else {
+        alert('Gagal mengambil data: ' + (data.message || 'Error server'));
       }
-    });
-  </script>
+    } catch (err) {
+      console.error(err);
+      alert('Terjadi kesalahan koneksi ke server.');
+    }
+  }
+
+  // Menangani tombol Enter saat berada di dalam input box
+  document.getElementById('inputKota').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') cariData();
+  });
+</script>
 </body>
 </html>

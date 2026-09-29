@@ -38,8 +38,8 @@ app.get("/api/lokasi", async (req, res) => {
             });
         }
 
-        if (kecamatan === "-" && feature.place_type && feature.place_type.includes("subdistrict")) {
-            kecamatan = feature.text;
+       if (kecamatan === "-") {
+            kecamatan = feature.text || kota;
         }
 
         res.json({

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MapTiler Geocoding API</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen flex items-center justify-center p-4">
+
+  <div class="max-w-md w-full bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-xl">
+    <h1 class="text-2xl font-bold mb-1 text-blue-400 text-center">Data Lokasi MapTiler</h1>
+    <p class="text-slate-400 text-xs text-center mb-6">Integrasi Express.js dengan MapTiler API</p>
+    
+    <!-- Input Lokasi -->
+    <div class="space-y-2 mb-6">
+      <label for="inputKota" class="text-xs font-semibold uppercase tracking-wider text-slate-300">LOKASI: &lt;INPUT&gt;</label>
+      <div class="flex gap-2">
+        <input 
+          type="text" 
+          id="inputKota" 
+          placeholder="Masukkan nama kota/lokasi..." 
+          class="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:outline-none focus:border-blue-500 text-sm text-white"
+        >
+        <button 
+          id="btnCari" 
+          type="button"
+          class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded-lg transition-all shadow-lg shadow-blue-500/20 text-sm whitespace-nowrap"
+        >
+          cari
+        </button>
+      </div>
+    </div>
+
+    <!-- Output Hasil Data -->
+    <div id="result" class="bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-3">
+      <div>
+        <p class="text-slate-400 text-xs uppercase tracking-wider font-semibold">NAMA TEMPAT:</p>
+        <p id="namaTempat" class="text-base font-semibold text-blue-300 mt-1">-</p>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2 text-center pt-1 border-t border-slate-800">
+        <div class="bg-slate-800/60 p-2 rounded-lg border border-slate-700/50">
+          <p class="text-[10px] text-slate-400 font-semibold uppercase">NEGARA</p>
+          <p id="negara" class="text-xs font-medium text-slate-200 mt-1">-</p>
+        </div>
+        <div class="bg-slate-800/60 p-2 rounded-lg border border-slate-700/50">
+          <p class="text-[10px] text-slate-400 font-semibold uppercase">PROVINSI</p>
+          <p id="provinsi" class="text-xs font-medium text-slate-200 mt-1">-</p>
+        </div>
+        <div class="bg-slate-800/60 p-2 rounded-lg border border-slate-700/50">
+          <p class="text-[10px] text-slate-400 font-semibold uppercase">KECAMATAN</p>
+          <p id="kecamatan" class="text-xs font-medium text-slate-200 mt-1">-</p>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-2 gap-2 pt-1">
+        <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700">
+          <p class="text-[10px] text-emerald-400 font-semibold uppercase">LONGITUDE</p>
+          <p id="longitude" class="text-xs font-mono text-white mt-0.5">-</p>
+        </div>
+        <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700">
+          <p class="text-[10px] text-emerald-400 font-semibold uppercase">LATITUDE</p>
+          <p id="latitude" class="text-xs font-mono text-white mt-0.5">-</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function cariData() {
+      const inputEl = document.getElementById('inputKota');
+      if (!inputEl) return alert('Elemen inputKota tidak ditemukan');
+      
+      const kota = inputEl.value.trim();
+      if (!kota) {
+        alert('Silakan masukkan nama lokasi terlebih dahulu!');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/lokasi?kota=${encodeURIComponent(kota)}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          document.getElementById('namaTempat').textContent = data.namaTempat || '-';
+          document.getElementById('negara').textContent = data.negara || '-';
+          document.getElementById('provinsi').textContent = data.provinsi || '-';
+          document.getElementById('kecamatan').textContent = data.kecamatan || '-';
+          document.getElementById('longitude').textContent = data.longitude || '-';
+          document.getElementById('latitude').textContent = data.latitude || '-';
+        } else {
+          alert('Gagal mengambil data: ' + data.message);
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Terjadi kesalahan koneksi ke server.');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('btnCari');
+      const input = document.getElementById('inputKota');
+
+      if (btn) btn.addEventListener('click', cariData);
+      if (input) {
+        input.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') cariData();
+        });
+      }
+    });
+  </script>
+</body>
+</html>
